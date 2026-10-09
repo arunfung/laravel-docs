@@ -1,0 +1,72 @@
+---
+name: learnku-laravel-translate
+description: Translate and submit a Laravel documentation article on LearnKu using two versioned article URLs, preserving local English and prior Chinese snapshots and committing the three article files. Use for the complete LearnKu translation workflow, including claiming untranslated blocks and delivering reviewed translations through the user's signed-in Chrome session.
+---
+
+# LearnKu Laravel 翻译工作流
+
+这是本 Laravel 文档翻译仓库的工具技能。技能说明、界面配置、脚本和测试均在本目录维护，不依赖个人技能目录或此前任务的临时文件。
+
+输入：旧版中文文章 URL、新版待翻译文章 URL，以及当前 Laravel 文档仓库。仅给新版目录时，先从目录中找可认领文章，再找到同名旧版文章。
+
+完整流程的完成条件：旧版中文留底、新版英文备份和新版中文译文均已提交；本次文章的每个可翻译区块均已在 LearnKu 投递并看到成功或待审核状态。将「已投递待审核」与「文档已发布」区分。用户授权完整流程后，复用该次任务的提交与投递授权，不在每个区块重复询问；仅要求本地翻译时，网站投递不在授权范围内。
+
+## 仓库内使用
+
+在仓库根目录执行下面的命令。脚本只需要 Python 3 标准库；网站操作需要用户已登录的浏览器及可用的浏览器控制工具。脚本负责留底、校验和区块提取，实际翻译与投递由使用本技能的代理完成。
+
+可直接要求：
+
+> 使用 $learnku-laravel-translate，参考 https://learnku.com/docs/laravel/12.x/helpers/16967，翻译 https://learnku.com/docs/laravel/13.x/helpers/17083，提交三个文件并完成网站投递。
+
+修改本技能或脚本后，运行仓库内回归测试：
+
+```sh
+python3 -B -m unittest discover -s .agents/skills/learnku-laravel-translate/tests -v
+```
+
+## 备份与翻译
+
+1. 检查分支、工作区和同名文件。两篇 URL 的 slug 必须一致。根目录 `<slug>.md` 是官方最新原文，以仓库为准。网站可能滞后；核对其差异用于定位区块，不以旧网站内容覆盖仓库。
+2. 在已登录 Chrome 中打开旧版文章，读取页底「Markdown 文本」的实际链接。下载该公开 Markdown 到临时文件。保留全部中文内容，允许统一 CRLF 为 LF 及移除文件末尾额外空行。
+3. 执行 `python3 .agents/skills/learnku-laravel-translate/scripts/article.py prepare OLD_URL NEW_URL --repo . --reference DOWNLOADED_MD`。它会创建 `OLD/zh/slug.md`、`NEW/en/slug.md`、`NEW/zh/slug.md`，已有文件保持原样，并验证英文备份与根目录原文一致。若已有留底，先核对来源；已有译文则继续，避免覆盖。
+4. 以新版英文为完整结构，参考旧版中文翻译所有说明、标题、目录和解释性代码注释。保留新版新增或修改的段落；旧版没有的内容逐项翻译。不要用整篇旧版译文替换新版。代码、示例输出、API 名称、锚点、链接目标、`{{version}}`、提示块类型以及内嵌 HTML/CSS 与新版一致。
+5. 保持每个原文行对应一个译文行，便于精确提取网站区块。用 `apply_patch` 编辑译文。复用旧版译文后仍对照新版复核参数位置、返回值、异常条件和新增内容，修复参考译文中的明显错误。
+6. 执行 `python3 .agents/skills/learnku-laravel-translate/scripts/article.py validate NEW/en/slug.md NEW/zh/slug.md`，再人工复核全文与注释。自动检查只证明结构和代码完整，不能证明译意正确。
+7. 仅暂存这三篇文章，用仓库当前惯例提交。检查 `git diff --cached --check`、提交范围和最终工作区状态。保留用户已有的无关改动。若投递复核发现本地译文有遗漏或错误，修正、校验并补交后继续。
+
+## LearnKu 认领与投递
+
+使用 `cua_repl` 浏览器工具或其原生 Chrome 控制，读取当前 UI 后操作。首次初始化遵循工具要求。浏览器接口不可用时，可以使用 `cua.getApp("com.google.Chrome")` 的原生 UI；不要读取浏览器 Cookie 或自行调用私有提交接口。
+
+1. 打开新版文章，确认尚未翻译及各区块状态。已有自己的认领则续做；他人的认领或已投递区块保留。按文章区块执行，而非把整篇译文贴入单一区块。
+2. 点击当前区块「我来翻译」，完成网站显示的认领步骤。只在准备好本地区块译文时认领，留意页面倒计时。
+3. 读取翻译编辑器中的完整英文 Markdown 区块。把该原文保存为临时 snippet 文件，执行：
+
+   `python3 .agents/skills/learnku-laravel-translate/scripts/article.py extract NEW/en/slug.md NEW/zh/slug.md --snippet SNIPPET_FILE`
+
+   脚本要求英文区块在留底中唯一、按整行匹配，并先验证行结构对应。若不匹配，对照完整区块与仓库，逐项复核差异及首尾行；以锚点、方法标题和相邻区块定位仓库对应完整范围，然后使用 `--lines START:END`。范围内保留官方新增段落、修正后的示例和代码块语言标签。网站缺少的小节补入其所属区块，同时更新相关目录链接。相邻区块边界不能遗漏或重复任何仓库正文。
+
+   网站会把 `/docs/{{version}}/` 展开为 `/docs/laravel/13.x/` 等链接。匹配时可等价还原；投递时用 `--web-version NEW_VERSION` 展开，保留本地文件中的官方占位符。
+4. 在实际编辑器聚焦后全选并粘贴对应中文。LearnKu 使用 CodeMirror；普通 `#translation` 文本框可能隐藏，另有取消原因框。DOM 中确认 `.CodeMirror textarea` 后，用其 `press('Meta+A')`、标签页剪贴板 `writeText` 和 `press('Meta+V')` 粘贴。点击预览后，CodeMirror 才会同步 `#translation`；此时读取其值，确认与预期译文完全一致。
+5. 点击「预览并提交」，检查渲染后的标题、列表、链接、代码及说明；看不到内容时滚动到相应区域并读取新 UI。
+6. 阅读当前「请自检」每一项，实际完成对应检查后全部勾选。新认领区块点击「确定投递」；已有自己译文的「编辑」入口使用「提交修改」。控件点击因滚动或布局变化未生效时，读取新状态后可使用按钮的 `press('Enter')` 激活。
+7. 等待并读取「翻译提交成功」等服务器反馈，记录区块号、编辑链接及实际状态。导航中的超时不代表失败：先读取当前页面再决定是否重试。返回文章继续下一个可认领区块，直到全部已处理。已投递状态是避免重复投递的依据。
+8. 若提交返回 `419 Page Expired`，先确认区块未提交；重新打开同一已观察到的编辑 GET 地址，读取新表单后再粘贴、预览、自检并提交一次。再次失败时停止该区块，保留译文并报告错误。
+
+## 原生 Chrome 操作要点
+
+- 每批操作后读取 `getAXState()`，以新索引定位元素。不要跨页面复用索引。
+- 浏览器运行时需要完整本地译文时，可通过 TextEdit 打开对应文件，全选，然后从 `getAXState()` 的 `Selected text` 读取全文；也可读取文件打开对话框的完整 Markdown 预览。验证行数和首尾边界，关闭未修改的文件。浏览器标签页剪贴板可能与系统剪贴板隔离，不假设跨应用复制已成功。
+- 原生编辑器可能显示为 `text entry area`。先用截图确认是实际 CodeMirror 输入区域，再全选粘贴；避免把译文写进取消原因等其他输入框。
+- 页面可能同时包含隐藏的预览及自检区域。点击「预览并提交」后读取 UI 或截图，确认当前可见的预览再提交。
+- 成功投递后可能仍停留在编辑 URL；以成功消息和「已经提交译文、等待审核」等实际状态判断，避免再次点击投递。
+- 只有登录、验证码、他人占用全部剩余区块或网站错误确实阻碍进度时，保留本地提交并报告具体未完成的区块。
+
+## 最终核对与交付
+
+逐项核对本次区块记录与文章状态，确保没有自己认领但未提交的区块；他人占用或待审核状态如实报告。全部发布后，网站可能转为普通文章、没有区块容器，此时以完整正文和成功投递记录核实，不把容器数量为零解释为未完成。
+
+重新读取页底「Markdown 文本」的实际链接并下载已发布正文，与本地新版中文比较。只忽略 CRLF、空白行分隔和网站对版本占位符的展开；其他差异逐项核查。待审核期间导出可能仍是旧正文，保留投递证据并明确等待审核。对已完全发布的文章，核对目录、新增小节、代码语言标签及示例，确认网站正文与本地最新译文一致。
+
+报告本地提交 hash、文章链接、本次投递区块数和网站当前状态。用户要求截图时，附上实际成功消息或文章状态的截图。不能仅凭点击提交或本地校验宣称全流程完成。后续用户只需给出两篇 URL，即可再次使用本技能。
