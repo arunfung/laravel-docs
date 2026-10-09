@@ -1,0 +1,4 @@
+interface:
+  display_name: "LearnKu Laravel 文档翻译"
+  short_description: "根据两篇版本文档完成留底、翻译、Git 提交、认领、网站投递与最终核对"
+  default_prompt: "使用 $learnku-laravel-translate，参考这篇旧版中文文档翻译并投递这篇新版文档：OLD_URL NEW_URL。"
