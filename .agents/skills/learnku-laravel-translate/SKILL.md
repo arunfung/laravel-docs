@@ -1,6 +1,6 @@
 ---
 name: learnku-laravel-translate
-description: Translate and submit a Laravel documentation article on LearnKu using two versioned article URLs, preserving local English and prior Chinese snapshots and committing the three article files. Use for the complete LearnKu translation workflow, including claiming untranslated blocks and delivering reviewed translations through the user's signed-in Chrome session.
+description: Translate and submit a Laravel documentation article on LearnKu using two versioned article URLs, preserving local English and prior Chinese snapshots and committing and pushing the three article files. Use for the complete LearnKu translation workflow, including claiming untranslated blocks and delivering reviewed translations through the user's signed-in Chrome session.
 ---
 
 # LearnKu Laravel 翻译工作流
@@ -9,7 +9,7 @@ description: Translate and submit a Laravel documentation article on LearnKu usi
 
 输入：旧版中文文章 URL、新版待翻译文章 URL，以及当前 Laravel 文档仓库。仅给新版目录时，先从目录中找可认领文章，再找到同名旧版文章。
 
-完整流程的完成条件：旧版中文留底、新版英文备份和新版中文译文均已提交；本次文章的每个可翻译区块均已在 LearnKu 投递并看到成功或待审核状态。将「已投递待审核」与「文档已发布」区分。用户授权完整流程后，复用该次任务的提交与投递授权，不在每个区块重复询问；仅要求本地翻译时，网站投递不在授权范围内。
+完整流程默认包含在当前分支提交并推送。完成条件：旧版中文留底、新版英文备份和新版中文译文均已提交并核实远端接收；本次文章的每个可翻译区块均已在 LearnKu 投递并看到成功或待审核状态。将「已投递待审核」与「文档已发布」区分。用户授权完整流程后，复用该次任务的提交、推送与投递授权，不在每个区块重复询问。用户明确要求仅翻译、仅提交或不推送时，按其限定范围执行；仅要求本地翻译时，网站投递不在授权范围内。
 
 ## 仓库内使用
 
@@ -17,7 +17,7 @@ description: Translate and submit a Laravel documentation article on LearnKu usi
 
 可直接要求：
 
-> 使用 $learnku-laravel-translate，参考 https://learnku.com/docs/laravel/12.x/helpers/16967，翻译 https://learnku.com/docs/laravel/13.x/helpers/17083，提交三个文件并完成网站投递。
+> 使用 $learnku-laravel-translate，参考 https://learnku.com/docs/laravel/12.x/helpers/16967，翻译 https://learnku.com/docs/laravel/13.x/helpers/17083，在当前分支提交并推送三个文件，完成网站投递与正文核对。
 
 修改本技能或脚本后，运行仓库内回归测试：
 
@@ -35,6 +35,15 @@ python3 -B -m unittest discover -s .agents/skills/learnku-laravel-translate/test
 6. 执行 `python3 .agents/skills/learnku-laravel-translate/scripts/article.py validate NEW/en/slug.md NEW/zh/slug.md`，再人工复核全文与注释。自动检查只证明结构和代码完整，不能证明译意正确。
 7. 仅暂存这三篇文章，用仓库当前惯例提交。检查 `git diff --cached --check`、提交范围和最终工作区状态。保留用户已有的无关改动。若投递复核发现本地译文有遗漏或错误，修正、校验并补交后继续。
 
+## 提交与推送
+
+提交成功不等于推送完成。完整流程按以下步骤推送；若用户明确禁止推送则跳过。
+
+1. 读取当前分支、上游和 `git remote -v`。已有上游时沿用其远端与分支；没有上游时，核对 `origin` 是用户的翻译仓库再建立同名分支上游。多个候选远端或目标不明时询问用户。推送目标是用户的翻译仓库，不是官方 `laravel/docs` 源仓库。
+2. 检查全部待推送提交，确认其中只有本次任务或用户已授权推送的提交；包含无关提交时说明范围并请求确认。技能修改单独提交，避免混入仅应包含三篇文章的提交。
+3. 使用明确的远端和目标分支推送，例如 `git push origin HEAD:13.x_zh`；首次建立上游时加 `-u`。推送被拒绝时保留本地提交，读取错误并报告原因；需要合并或变基时先确认其范围，保留远端历史。
+4. 比较 `git ls-remote --heads REMOTE BRANCH` 返回的提交与本地 `git rev-parse HEAD`，并检查最终工作区及上游状态。只有远端提交一致才报告推送成功。网站核对产生补交后，再推送并重新核验。
+
 ## LearnKu 认领与投递
 
 使用 `cua_repl` 浏览器工具或其原生 Chrome 控制，读取当前 UI 后操作。首次初始化遵循工具要求。浏览器接口不可用时，可以使用 `cua.getApp("com.google.Chrome")` 的原生 UI；不要读取浏览器 Cookie 或自行调用私有提交接口。
@@ -51,7 +60,7 @@ python3 -B -m unittest discover -s .agents/skills/learnku-laravel-translate/test
 4. 在实际编辑器聚焦后全选并粘贴对应中文。LearnKu 使用 CodeMirror；普通 `#translation` 文本框可能隐藏，另有取消原因框。DOM 中确认 `.CodeMirror textarea` 后，用其 `press('Meta+A')`、标签页剪贴板 `writeText` 和 `press('Meta+V')` 粘贴。点击预览后，CodeMirror 才会同步 `#translation`；此时读取其值，确认与预期译文完全一致。
 5. 点击「预览并提交」，检查渲染后的标题、列表、链接、代码及说明；看不到内容时滚动到相应区域并读取新 UI。
 6. 阅读当前「请自检」每一项，实际完成对应检查后全部勾选。新认领区块点击「确定投递」；已有自己译文的「编辑」入口使用「提交修改」。控件点击因滚动或布局变化未生效时，读取新状态后可使用按钮的 `press('Enter')` 激活。
-7. 等待并读取「翻译提交成功」等服务器反馈，记录区块号、编辑链接及实际状态。导航中的超时不代表失败：先读取当前页面再决定是否重试。返回文章继续下一个可认领区块，直到全部已处理。已投递状态是避免重复投递的依据。
+7. 等待并读取「翻译提交成功」等服务器反馈，记录区块号、编辑链接及实际状态。首次出现成功状态即保存截图，全部区块处理后再保存最终文章状态，交付时嵌入截图。导航中的超时不代表失败：先读取当前页面再决定是否重试。返回文章继续下一个可认领区块，直到全部已处理。已投递状态是避免重复投递的依据。
 8. 若提交返回 `419 Page Expired`，先确认区块未提交；重新打开同一已观察到的编辑 GET 地址，读取新表单后再粘贴、预览、自检并提交一次。再次失败时停止该区块，保留译文并报告错误。
 
 ## 原生 Chrome 操作要点
@@ -61,6 +70,7 @@ python3 -B -m unittest discover -s .agents/skills/learnku-laravel-translate/test
 - 原生编辑器可能显示为 `text entry area`。先用截图确认是实际 CodeMirror 输入区域，再全选粘贴；避免把译文写进取消原因等其他输入框。
 - 页面可能同时包含隐藏的预览及自检区域。点击「预览并提交」后读取 UI 或截图，确认当前可见的预览再提交。
 - 成功投递后可能仍停留在编辑 URL；以成功消息和「已经提交译文、等待审核」等实际状态判断，避免再次点击投递。
+- 电脑锁屏时停止 UI 操作并请用户手动解锁；已有的本地提交、成功投递记录与正文核对结果仍有效，如实区分剩余业务步骤与仅缺截图，不重复投递已成功的区块。
 - 只有登录、验证码、他人占用全部剩余区块或网站错误确实阻碍进度时，保留本地提交并报告具体未完成的区块。
 
 ## 最终核对与交付
@@ -69,4 +79,4 @@ python3 -B -m unittest discover -s .agents/skills/learnku-laravel-translate/test
 
 重新读取页底「Markdown 文本」的实际链接并下载已发布正文，与本地新版中文比较。只忽略 CRLF、空白行分隔和网站对版本占位符的展开；其他差异逐项核查。待审核期间导出可能仍是旧正文，保留投递证据并明确等待审核。对已完全发布的文章，核对目录、新增小节、代码语言标签及示例，确认网站正文与本地最新译文一致。
 
-报告本地提交 hash、文章链接、本次投递区块数和网站当前状态。用户要求截图时，附上实际成功消息或文章状态的截图。不能仅凭点击提交或本地校验宣称全流程完成。后续用户只需给出两篇 URL，即可再次使用本技能。
+报告本地提交 hash、推送远端及分支、文章链接、本次投递区块数和网站当前状态，并附上实际成功消息或文章状态截图；截图不可用时明确说明，不以其替代服务器反馈与正文核对。不能仅凭点击提交、本地校验或本地提交宣称全流程完成。后续用户只需给出两篇 URL，即可再次使用本技能，默认完成提交、推送、网站投递与最终核对。
