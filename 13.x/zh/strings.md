@@ -362,7 +362,7 @@ $slice = Str::ascii('û');
 <a name="method-str-before"></a>
 #### `Str::before()` {.collection-method}
 
-`Str::before` 方法返回字符串中 指定值之前的所有内容：
+`Str::before` 方法返回字符串中指定值之前的所有内容：
 
 ```php
 use Illuminate\Support\Str;
@@ -375,7 +375,7 @@ $slice = Str::before('This is my name', 'my name');
 <a name="method-str-before-last"></a>
 #### `Str::beforeLast()` {.collection-method}
 
-`Str::beforeLast` 方法返回字符串中 最后一次出现指定值之前的所有内容：
+`Str::beforeLast` 方法返回字符串中最后一次出现指定值之前的所有内容：
 
 ```php
 use Illuminate\Support\Str;
@@ -388,7 +388,7 @@ $slice = Str::beforeLast('This is my name', 'is');
 <a name="method-str-between"></a>
 #### `Str::between()` {.collection-method}
 
-`Str::between` 方法返回字符串中 两个值之间的部分内容：
+`Str::between` 方法返回字符串中两个值之间的部分内容：
 
 ```php
 use Illuminate\Support\Str;
@@ -401,7 +401,7 @@ $slice = Str::between('This is my name', 'This', 'name');
 <a name="method-str-between-first"></a>
 #### `Str::betweenFirst()` {.collection-method}
 
-`Str::betweenFirst` 方法返回字符串中 两个值之间最小可能的部分内容：
+`Str::betweenFirst` 方法返回字符串中两个值之间最小可能的部分内容：
 
 ```php
 use Illuminate\Support\Str;
@@ -767,7 +767,7 @@ $initials = Str::initials('taylor otwell', capitalize: true);
 <a name="method-str-inline-markdown"></a>
 #### `Str::inlineMarkdown()` {.collection-method}
 
-`Str::inlineMarkdown` 方法使用 [CommonMark](https://commonmark.thephpleague.com/) 将 GitHub 风格的 Markdown 转换为 行内 HTML。不过，与 `markdown` 方法不同，它不会将所有生成的 HTML 包裹在块级元素中：
+`Str::inlineMarkdown` 方法使用 [CommonMark](https://commonmark.thephpleague.com/) 将 GitHub 风格的 Markdown 转换为行内 HTML。不过，与 `markdown` 方法不同，它不会将所有生成的 HTML 包裹在块级元素中：
 
 ```php
 use Illuminate\Support\Str;
