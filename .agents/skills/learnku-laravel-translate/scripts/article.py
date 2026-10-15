@@ -26,7 +26,8 @@ def shape(text):
             code = not code
             result.append(line)
         elif code:
-            if re.match(r'^\s*(//|\* )', line):
+            if (re.match(r'^\s*(//|\* )', line)
+                    or re.fullmatch(r'\s*<!--(?:(?!-->).)*-->\s*', line)):
                 result.append('COMMENT')
             else:
                 result.append(line)
