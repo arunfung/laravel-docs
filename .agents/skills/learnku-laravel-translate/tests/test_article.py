@@ -121,6 +121,21 @@ class ArticleTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 MODULE.validate(source, changed)
 
+    def test_blade_comment_translation_preserves_executable_content(self):
+        source = "```blade\n@can('update', $post)\n    <!-- The user can update the post. -->\n    <button>Update</button>\n@endcan\n```\n"
+        translated = source.replace('The user can update the post.', '用户可以更新文章。')
+        self.assertEqual(MODULE.validate(source, translated)['status'], 'passed')
+        for changed in [translated.replace('Update</button>', 'Delete</button>'),
+                        translated.replace(' -->', ''),
+                        translated.replace(' -->', ' --><script>run()</script>')]:
+            with self.assertRaises(ValueError):
+                MODULE.validate(source, changed)
+
+    def test_inline_html_comment_does_not_hide_code_changes(self):
+        source = '```blade\n<button>Update</button><!-- Explain -->\n```\n'
+        with self.assertRaises(ValueError):
+            MODULE.validate(source, source.replace('Update', 'Delete'))
+
     def test_validation_catches_anchor_fence_and_whitespace_changes(self):
         source = self.source.read_text()
         translated = self.translated.read_text()
