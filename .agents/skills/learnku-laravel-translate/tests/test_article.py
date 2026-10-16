@@ -136,6 +136,43 @@ class ArticleTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             MODULE.validate(source, source.replace('Update', 'Delete'))
 
+    def test_php_inline_comment_translation_preserves_code(self):
+        source = "```php\n'store' => 'passwords', // Optional...\n```\n"
+        translated = source.replace('Optional...', '可选……')
+        self.assertEqual(MODULE.validate(source, translated)['status'], 'passed')
+        for changed in [translated.replace("'passwords'", "'other'"),
+                        translated.replace(',', ';')]:
+            with self.assertRaises(ValueError):
+                MODULE.validate(source, changed)
+        self.source.write_text(source)
+        self.translated.write_text(translated)
+        result = self.run_cli('--lines', '2:2')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout, "'store' => 'passwords', // 可选……\n")
+
+    def test_php_comment_markers_in_strings_remain_code(self):
+        source = '''```php
+$url = 'https://example.com/reset'; // Explain
+$text = "escaped \\\" // literal"; // Explain
+$multiline = 'first line
+// This is string content
+last line'; // Explain
+```
+'''
+        translated = source.replace('// Explain', '// 说明')
+        self.assertEqual(MODULE.validate(source, translated)['status'], 'passed')
+        for changed in [translated.replace('/reset', '/other'),
+                        translated.replace('// literal', '// changed'),
+                        translated.replace('// This is string content', '// 字符串内容')]:
+            with self.assertRaises(ValueError):
+                MODULE.validate(source, changed)
+
+    def test_non_php_inline_comment_markers_remain_code(self):
+        for language in ['ini', 'shell', 'blade']:
+            source = f'```{language}\nvalue // literal\n```\n'
+            with self.assertRaises(ValueError):
+                MODULE.validate(source, source.replace('literal', 'changed'))
+
     def test_validation_catches_anchor_fence_and_whitespace_changes(self):
         source = self.source.read_text()
         translated = self.translated.read_text()
