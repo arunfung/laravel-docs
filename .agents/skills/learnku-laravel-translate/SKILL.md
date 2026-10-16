@@ -1,6 +1,6 @@
 ---
 name: learnku-laravel-translate
-description: Translate and submit a Laravel documentation article on LearnKu using two versioned article URLs, preserving local English and prior Chinese snapshots and committing and pushing the three article files. Use for the complete LearnKu translation workflow, including claiming untranslated blocks and delivering reviewed translations through the user's signed-in Chrome session.
+description: Translate and submit Laravel documentation on LearnKu from two versioned article URLs, preserving local English and prior Chinese snapshots. Use for the full workflow of translation, Git commit and push, block submission, and published-content verification in the in-app browser.
 ---
 
 # LearnKu Laravel 翻译工作流
@@ -13,7 +13,7 @@ description: Translate and submit a Laravel documentation article on LearnKu usi
 
 ## 仓库内使用
 
-在仓库根目录执行下面的命令。脚本只需要 Python 3 标准库；网站操作需要用户已登录的浏览器及可用的浏览器控制工具。脚本负责留底、校验和区块提取，实际翻译与投递由使用本技能的代理完成。
+在仓库根目录执行下面的命令。脚本只需要 Python 3 标准库；网站操作使用 `cua_repl` 浏览器工具。脚本负责留底、校验和区块提取，实际翻译与投递由使用本技能的代理完成。
 
 可直接要求：
 
@@ -25,10 +25,18 @@ description: Translate and submit a Laravel documentation article on LearnKu usi
 python3 -B -m unittest discover -s .agents/skills/learnku-laravel-translate/tests -v
 ```
 
+## 浏览器与登录
+
+- 默认使用内置浏览器（`iab`），在后台完成网站操作；用户指定其他浏览器时遵循其选择。按工具要求初始化，复用目标文章的可控标签页或创建任务标签页。
+- 在当前 LearnKu 页面确认登录状态。已登录时直接复用；未登录时，从可见登录入口选择账号密码登录，使用用户已提供的凭据或浏览器可用的密码填充。无需仅因未登录就让用户手动操作；缺少凭据时，只询问缺少的账号或密码。登录后确认页面显示目标账户，再继续认领与投递。
+- 密码仅用于 LearnKu 登录表单，不回显，也不写入技能、仓库文件或日志。
+- 遇到验证码或二次验证时，请用户完成该步骤，验证通过后继续原任务。
+- 内置浏览器与外部 Chrome 的登录状态分别核对。只有内置浏览器控制不可用或用户指定 Chrome 时，才切换到 Chrome 浏览器工具；必要时使用 `cua.getApp("com.google.Chrome")` 的原生 UI。未登录时先按上述密码登录流程处理。网站操作通过可见界面完成，不读取浏览器 Cookie 或自行调用私有提交接口。
+
 ## 备份与翻译
 
 1. 检查分支、工作区和同名文件。两篇 URL 的 slug 必须一致。根目录 `<slug>.md` 是官方最新原文，以仓库为准。网站可能滞后；核对其差异用于定位区块，不以旧网站内容覆盖仓库。
-2. 在已登录 Chrome 中打开旧版文章，读取页底「Markdown 文本」的实际链接。下载该公开 Markdown 到临时文件。保留全部中文内容，允许统一 CRLF 为 LF 及移除文件末尾额外空行。
+2. 在所选浏览器中打开旧版文章，读取页底「Markdown 文本」的实际链接。下载该公开 Markdown 到临时文件。保留全部中文内容，允许统一 CRLF 为 LF 及移除文件末尾额外空行。
 3. 执行 `python3 .agents/skills/learnku-laravel-translate/scripts/article.py prepare OLD_URL NEW_URL --repo . --reference DOWNLOADED_MD`。它会创建 `OLD/zh/slug.md`、`NEW/en/slug.md`、`NEW/zh/slug.md`，已有文件保持原样，并验证英文备份与根目录原文一致。若已有留底，先核对来源；已有译文则继续，避免覆盖。
 4. 以新版英文为完整结构，参考旧版中文翻译所有说明、标题、目录和解释性代码注释。保留新版新增或修改的段落；旧版没有的内容逐项翻译。不要用整篇旧版译文替换新版。代码、示例输出、API 名称、锚点、链接目标、`{{version}}`、提示块类型以及内嵌 HTML/CSS 与新版一致。
 5. 保持每个原文行对应一个译文行，便于精确提取网站区块。用 `apply_patch` 编辑译文。复用旧版译文后仍对照新版复核参数位置、返回值、异常条件和新增内容，修复参考译文中的明显错误。
@@ -46,7 +54,7 @@ python3 -B -m unittest discover -s .agents/skills/learnku-laravel-translate/test
 
 ## LearnKu 认领与投递
 
-使用 `cua_repl` 浏览器工具或其原生 Chrome 控制，读取当前 UI 后操作。首次初始化遵循工具要求。浏览器接口不可用时，可以使用 `cua.getApp("com.google.Chrome")` 的原生 UI；不要读取浏览器 Cookie 或自行调用私有提交接口。
+完成上述浏览器选择与登录后，读取当前 UI 并逐块操作。
 
 1. 打开新版文章，确认尚未翻译及各区块状态。已有自己的认领则续做；他人的认领或已投递区块保留。按文章区块执行，而非把整篇译文贴入单一区块。
 2. 点击当前区块「我来翻译」，完成网站显示的认领步骤。只在准备好本地区块译文时认领，留意页面倒计时。
@@ -71,7 +79,7 @@ python3 -B -m unittest discover -s .agents/skills/learnku-laravel-translate/test
 - 页面可能同时包含隐藏的预览及自检区域。点击「预览并提交」后读取 UI 或截图，确认当前可见的预览再提交。
 - 成功投递后可能仍停留在编辑 URL；以成功消息和「已经提交译文、等待审核」等实际状态判断，避免再次点击投递。
 - 电脑锁屏时停止 UI 操作并请用户手动解锁；已有的本地提交、成功投递记录与正文核对结果仍有效，如实区分剩余业务步骤与仅缺截图，不重复投递已成功的区块。
-- 只有登录、验证码、他人占用全部剩余区块或网站错误确实阻碍进度时，保留本地提交并报告具体未完成的区块。
+- 只有缺少登录凭据、需要用户完成验证、他人占用全部剩余区块或网站错误确实阻碍进度时，保留本地提交并报告具体未完成的区块。
 
 ## 最终核对与交付
 
