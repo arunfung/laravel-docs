@@ -19,16 +19,39 @@ def article(url):
     return match.groups()
 
 
+def php_comment_shape(line, quote):
+    escaped = False
+    for index, char in enumerate(line):
+        if quote:
+            if escaped:
+                escaped = False
+            elif char == '\\':
+                escaped = True
+            elif char == quote:
+                quote = None
+        elif char in "'\"`":
+            quote = char
+        elif line[index:index + 2] == '//':
+            return line[:index] + '// COMMENT', None
+    return line, quote
+
+
 def shape(text):
     result, code, style = [], False, False
+    code_language, php_quote = None, None
     for line in text.splitlines():
         if line.startswith('```'):
             code = not code
+            code_language = line[3:].strip() if code else None
+            php_quote = None
             result.append(line)
         elif code:
-            if (re.match(r'^\s*(//|\* )', line)
+            if php_quote is None and (re.match(r'^\s*(//|\* )', line)
                     or re.fullmatch(r'\s*<!--(?:(?!-->).)*-->\s*', line)):
                 result.append('COMMENT')
+            elif code_language == 'php':
+                normalized, php_quote = php_comment_shape(line, php_quote)
+                result.append(normalized)
             else:
                 result.append(line)
         elif line == '<style>':
