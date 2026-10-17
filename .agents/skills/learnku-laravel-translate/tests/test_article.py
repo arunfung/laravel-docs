@@ -206,6 +206,23 @@ last line'; // Explain
             with self.assertRaises(ValueError):
                 MODULE.validate(source, changed)
 
+    def test_shell_standalone_comment_translation_preserves_commands(self):
+        source = '```shell\n# Refresh the database\nphp artisan migrate:refresh --seed\n```\n'
+        translated = source.replace('Refresh the database', '刷新数据库')
+        self.assertEqual(MODULE.validate(source, translated)['status'], 'passed')
+        with self.assertRaises(ValueError):
+            MODULE.validate(source, translated.replace('--seed', '--force'))
+
+    def test_shell_hash_in_strings_and_expansions_remains_code(self):
+        source = "```shell\necho ${#name}\nprintf '#literal'\nprintf 'first\n# literal\nlast'\n# Explain\n```\n"
+        translated = source.replace('Explain', '说明')
+        self.assertEqual(MODULE.validate(source, translated)['status'], 'passed')
+        for changed in [translated.replace('${#name}', '${#other}'),
+                        translated.replace('#literal', '#changed'),
+                        translated.replace('# literal', '# 修改')]:
+            with self.assertRaises(ValueError):
+                MODULE.validate(source, changed)
+
     def test_validation_catches_anchor_fence_and_whitespace_changes(self):
         source = self.source.read_text()
         translated = self.translated.read_text()
