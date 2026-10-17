@@ -173,6 +173,21 @@ last line'; // Explain
             with self.assertRaises(ValueError):
                 MODULE.validate(source, source.replace('literal', 'changed'))
 
+    def test_php_blank_line_whitespace_can_be_cleaned(self):
+        source = "```php\n$value = 1;\n    \n$value++;\n```\n"
+        translated = source.replace('\n    \n', '\n\n')
+        self.assertEqual(MODULE.validate(source, translated)['status'], 'passed')
+        for changed in [translated.replace('$value++;', '$value--;'),
+                        translated.replace('\n\n', '\n'),
+                        source]:
+            with self.assertRaises(ValueError):
+                MODULE.validate(source, changed)
+
+    def test_php_multiline_string_blank_whitespace_remains_content(self):
+        source = "```php\n$text = 'first\n    \nlast';\n```\n"
+        with self.assertRaises(ValueError):
+            MODULE.validate(source, source.replace('\n    \n', '\n\n'))
+
     def test_validation_catches_anchor_fence_and_whitespace_changes(self):
         source = self.source.read_text()
         translated = self.translated.read_text()
