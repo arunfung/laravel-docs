@@ -19,7 +19,7 @@ def article(url):
     return match.groups()
 
 
-def php_comment_shape(line, quote):
+def line_comment_shape(line, quote, marker='//'):
     escaped = False
     for index, char in enumerate(line):
         if quote:
@@ -31,28 +31,31 @@ def php_comment_shape(line, quote):
                 quote = None
         elif char in "'\"`":
             quote = char
-        elif line[index:index + 2] == '//':
-            return line[:index] + '// COMMENT', None
+        elif line[index:index + len(marker)] == marker:
+            return line[:index] + marker + ' COMMENT', None
     return line, quote
 
 
 def shape(text):
     result, code, style = [], False, False
-    code_language, php_quote = None, None
+    code_language, code_quote = None, None
     for line in text.splitlines():
         if line.startswith('```'):
             code = not code
             code_language = line[3:].strip() if code else None
-            php_quote = None
+            code_quote = None
             result.append(line)
         elif code:
-            if code_language == 'php' and php_quote is None and not line.strip():
+            if code_language == 'sql':
+                normalized, code_quote = line_comment_shape(line, code_quote, '#')
+                result.append(normalized)
+            elif code_language == 'php' and code_quote is None and not line.strip():
                 result.append('BLANK')
-            elif php_quote is None and (re.match(r'^\s*(//|\* )', line)
+            elif code_quote is None and (re.match(r'^\s*(//|\* )', line)
                     or re.fullmatch(r'\s*<!--(?:(?!-->).)*-->\s*', line)):
                 result.append('COMMENT')
             elif code_language == 'php':
-                normalized, php_quote = php_comment_shape(line, php_quote)
+                normalized, code_quote = line_comment_shape(line, code_quote)
                 result.append(normalized)
             else:
                 result.append(line)

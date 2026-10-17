@@ -188,6 +188,24 @@ last line'; // Explain
         with self.assertRaises(ValueError):
             MODULE.validate(source, source.replace('\n    \n', '\n\n'))
 
+    def test_sql_hash_comment_translation_preserves_statements(self):
+        source = '```sql\n# Offset pagination\nselect * from users limit 15; # Explain\n```\n'
+        translated = source.replace('Offset pagination', '偏移量分页').replace('Explain', '说明')
+        self.assertEqual(MODULE.validate(source, translated)['status'], 'passed')
+        for changed in [translated.replace('limit 15', 'limit 30'),
+                        translated.replace('; #', ' #')]:
+            with self.assertRaises(ValueError):
+                MODULE.validate(source, changed)
+
+    def test_sql_hash_markers_in_strings_remain_content(self):
+        source = "```sql\nselect '#literal', 'it''s #literal', 'first\n# literal\nlast'; # Explain\n```\n"
+        translated = source.replace('Explain', '说明')
+        self.assertEqual(MODULE.validate(source, translated)['status'], 'passed')
+        for changed in [translated.replace('#literal', '#changed'),
+                        translated.replace('# literal', '# 修改')]:
+            with self.assertRaises(ValueError):
+                MODULE.validate(source, changed)
+
     def test_validation_catches_anchor_fence_and_whitespace_changes(self):
         source = self.source.read_text()
         translated = self.translated.read_text()
