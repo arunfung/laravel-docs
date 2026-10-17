@@ -46,7 +46,9 @@ def shape(text):
             php_quote = None
             result.append(line)
         elif code:
-            if php_quote is None and (re.match(r'^\s*(//|\* )', line)
+            if code_language == 'php' and php_quote is None and not line.strip():
+                result.append('BLANK')
+            elif php_quote is None and (re.match(r'^\s*(//|\* )', line)
                     or re.fullmatch(r'\s*<!--(?:(?!-->).)*-->\s*', line)):
                 result.append('COMMENT')
             elif code_language == 'php':
