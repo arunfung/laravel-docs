@@ -19,7 +19,7 @@ def article(url):
     return match.groups()
 
 
-def line_comment_shape(line, quote, marker='//'):
+def line_comment_shape(line, quote, marker='//', line_start_only=False):
     escaped = False
     for index, char in enumerate(line):
         if quote:
@@ -31,7 +31,8 @@ def line_comment_shape(line, quote, marker='//'):
                 quote = None
         elif char in "'\"`":
             quote = char
-        elif line[index:index + len(marker)] == marker:
+        elif line[index:index + len(marker)] == marker and (
+                not line_start_only or not line[:index].strip()):
             return line[:index] + marker + ' COMMENT', None
     return line, quote
 
@@ -48,6 +49,9 @@ def shape(text):
         elif code:
             if code_language == 'sql':
                 normalized, code_quote = line_comment_shape(line, code_quote, '#')
+                result.append(normalized)
+            elif code_language == 'shell':
+                normalized, code_quote = line_comment_shape(line, code_quote, '#', line_start_only=True)
                 result.append(normalized)
             elif code_language == 'php' and code_quote is None and not line.strip():
                 result.append('BLANK')
