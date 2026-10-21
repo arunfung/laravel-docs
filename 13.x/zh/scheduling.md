@@ -138,7 +138,7 @@ Schedule::exec('node /home/forge/script.js')->daily();
 
 前面的示例展示了如何配置任务按指定的时间间隔运行。除此之外，你还可以为任务设置以下调度频率：
 
-<div class="overflow-auto">
+<div class="overflow-auto" markdown="1">
 
 | 方法                             | 描述                                              |
 | ---------------------------------- | -------------------------------------------------------- |
@@ -204,7 +204,7 @@ Schedule::command('foo')
 
 其他调度约束条件如下：
 
-<div class="overflow-auto">
+<div class="overflow-auto" markdown="1">
 
 | 方法                                   | 描述                                            |
 | ---------------------------------------- | ------------------------------------------------------ |
@@ -657,7 +657,7 @@ Schedule::command('emails:send')
 
 Laravel 会在调度过程中分发多种 [事件](/docs/{{version}}/events)。你可以为以下任意事件 [定义监听器](/docs/{{version}}/events)：
 
-<div class="overflow-auto">
+<div class="overflow-auto" markdown="1">
 
 | 事件名称                                                  |
 | ----------------------------------------------------------- |
