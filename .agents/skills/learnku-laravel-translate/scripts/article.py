@@ -1,5 +1,6 @@
 import argparse
 import collections
+import html
 import json
 import re
 import sys
@@ -70,7 +71,7 @@ def shape(text):
             style = False
             result.append(line)
         elif style or re.match(r'^<|^> \[!', line):
-            result.append(line)
+            result.append(compatible_html(line))
         elif not line.strip():
             result.append('BLANK')
         elif line.startswith('#'):
@@ -83,6 +84,31 @@ def shape(text):
             result.append('TEXT')
     if code or style:
         raise ValueError('发现未闭合的代码围栏或 style 标签')
+    return result
+
+
+def compatible_html(line):
+    """Allow the two reviewed LearnKu renderer adaptations outside code fences."""
+    if line == '<div class="overflow-auto" markdown="1">':
+        return '<div class="overflow-auto">'
+    match = re.fullmatch(r'<h4 class="(collection-method(?: first-collection-method)?)"><code>([^<]+)</code></h4>', line)
+    if match:
+        return '####'
+    return line
+
+
+def method_headings(text):
+    result, code = [], False
+    for line in text.splitlines():
+        if line.startswith('```'):
+            code = not code
+        elif not code:
+            markdown = re.fullmatch(r'#### `([^`]+)` \{\.(collection-method)( \.first-collection-method)?\}', line)
+            rendered = re.fullmatch(r'<h4 class="(collection-method(?: first-collection-method)?)"><code>([^<]+)</code></h4>', line)
+            if markdown:
+                result.append((markdown[1], 'collection-method' + (' first-collection-method' if markdown[3] else '')))
+            elif rendered:
+                result.append((html.unescape(rendered[2]), rendered[1]))
     return result
 
 
@@ -99,7 +125,14 @@ def validate(source, translated):
     links = lambda s: collections.Counter(re.findall(r'\]\(([^)]+)\)', s))
     if links(source) != links(translated):
         errors.append('链接目标不一致')
+    if method_headings(source) != method_headings(translated):
+        errors.append('方法标题的 API 名称、样式或顺序不一致')
+    code = False
     for number, line in enumerate(translated.splitlines(), 1):
+        if line.startswith('```'):
+            code = not code
+        elif not code and line == '<div class="overflow-auto">':
+            errors.append(f'第 {number} 行的 LearnKu 表格容器需添加 markdown="1" 才能解析 Markdown')
         if line.rstrip() != line:
             errors.append(f'第 {number} 行有尾随空格')
         if re.search(r'/docs/laravel/\d+\.x|\[!注意\]|\[!警告\]|utm_source', line):
