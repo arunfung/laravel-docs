@@ -473,7 +473,7 @@ class LocalValetDriver extends LaravelValetDriver
 <a name="other-valet-commands"></a>
 ## 其他 Valet 命令
 
-<div class="overflow-auto">
+<div class="overflow-auto" markdown="1">
 
 | 命令 | 描述 |
 | --- | --- |
