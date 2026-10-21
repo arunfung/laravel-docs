@@ -121,6 +121,31 @@ class ArticleTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 MODULE.validate(source, changed)
 
+    def test_learnku_table_container_requires_markdown_parsing(self):
+        source = '<div class="overflow-auto">\n\n| Name |\n| --- |\n| Value |\n\n</div>\n'
+        with self.assertRaisesRegex(ValueError, 'Markdown'):
+            MODULE.validate(source, source)
+        translated = source.replace('overflow-auto"', 'overflow-auto" markdown="1"')
+        self.assertEqual(MODULE.validate(source, translated)['status'], 'passed')
+        with self.assertRaises(ValueError):
+            MODULE.validate(source, translated.replace('overflow-auto', 'other'))
+
+    def test_container_markup_inside_code_remains_executable_content(self):
+        source = '```blade\n<div class="overflow-auto">\n</div>\n```\n'
+        self.assertEqual(MODULE.validate(source, source)['status'], 'passed')
+        with self.assertRaises(ValueError):
+            MODULE.validate(source, source.replace('overflow-auto"', 'overflow-auto" markdown="1"'))
+
+    def test_method_heading_html_preserves_classes_and_api_name(self):
+        source = '#### `bigIncrements()` {.collection-method .first-collection-method}\n'
+        translated = '<h4 class="collection-method first-collection-method"><code>bigIncrements()</code></h4>\n'
+        self.assertEqual(MODULE.validate(source, translated)['status'], 'passed')
+        for changed in [translated.replace('bigIncrements', 'bigInteger'),
+                        translated.replace(' first-collection-method', ''),
+                        translated.replace('h4', 'h3')]:
+            with self.assertRaises(ValueError):
+                MODULE.validate(source, changed)
+
     def test_blade_comment_translation_preserves_executable_content(self):
         source = "```blade\n@can('update', $post)\n    <!-- The user can update the post. -->\n    <button>Update</button>\n@endcan\n```\n"
         translated = source.replace('The user can update the post.', '用户可以更新文章。')
