@@ -38,9 +38,9 @@ python3 -B -m unittest discover -s .agents/skills/learnku-laravel-translate/test
 1. 检查分支、工作区和同名文件。两篇 URL 的 slug 必须一致。根目录 `<slug>.md` 是官方最新原文，以仓库为准。网站可能滞后；核对其差异用于定位区块，不以旧网站内容覆盖仓库。
 2. 在所选浏览器中打开旧版文章，读取页底「Markdown 文本」的实际链接。下载该公开 Markdown 到临时文件。保留全部中文内容，允许统一 CRLF 为 LF 及移除文件末尾额外空行。
 3. 执行 `python3 .agents/skills/learnku-laravel-translate/scripts/article.py prepare OLD_URL NEW_URL --repo . --reference DOWNLOADED_MD`。它会创建 `OLD/zh/slug.md`、`NEW/en/slug.md`、`NEW/zh/slug.md`，已有文件保持原样，并验证英文备份与根目录原文一致。若已有留底，先核对来源；已有译文则继续，避免覆盖。
-4. 以新版英文为完整结构，参考旧版中文翻译所有说明、标题、目录和解释性代码注释。保留新版新增或修改的段落；旧版没有的内容逐项翻译。不要用整篇旧版译文替换新版。代码、示例输出、API 名称、锚点、链接目标、`{{version}}`、提示块类型以及内嵌 HTML/CSS 与新版一致。
+4. 以新版英文为完整结构，参考旧版中文翻译所有说明、标题、目录和解释性代码注释。保留新版新增或修改的段落；旧版没有的内容逐项翻译。不要用整篇旧版译文替换新版。代码、示例输出、API 名称、锚点、链接目标、`{{version}}`、提示块类型及 HTML/CSS 语义与新版一致。中文稿中的 `<div class="overflow-auto">` 应添加 `markdown="1"`，使 LearnKu 解析其中的 Markdown 表格。若发布后的方法标题显示 `{.collection-method}` 等源码，将该行改为等价的 `<h4 class="collection-method"><code>方法名</code></h4>`，首个方法保留 `first-collection-method` 类。兼容修改只用于中文稿正文，英文留底及代码示例保持原样；脚本仅允许这两种明确的兼容变换。
 5. 保持每个原文行对应一个译文行，便于精确提取网站区块。用 `apply_patch` 编辑译文。复用旧版译文后仍对照新版复核参数位置、返回值、异常条件和新增内容，修复参考译文中的明显错误。
-6. 执行 `python3 .agents/skills/learnku-laravel-translate/scripts/article.py validate NEW/en/slug.md NEW/zh/slug.md`，再人工复核全文与注释。自动检查只证明结构和代码完整，不能证明译意正确。
+6. 执行 `python3 .agents/skills/learnku-laravel-translate/scripts/article.py validate NEW/en/slug.md NEW/zh/slug.md`，再人工复核全文与注释。该检查验证结构、代码和已知容器兼容性；译意及网站实际渲染另行核对。
 7. 仅暂存这三篇文章，用仓库当前惯例提交。检查 `git diff --cached --check`、提交范围和最终工作区状态。保留用户已有的无关改动。若投递复核发现本地译文有遗漏或错误，修正、校验并补交后继续。
 
 ## 提交与推送
@@ -86,5 +86,14 @@ python3 -B -m unittest discover -s .agents/skills/learnku-laravel-translate/test
 逐项核对本次区块记录与文章状态，确保没有自己认领但未提交的区块；他人占用或待审核状态如实报告。全部发布后，网站可能转为普通文章、没有区块容器，此时以完整正文和成功投递记录核实，不把容器数量为零解释为未完成。
 
 重新读取页底「Markdown 文本」的实际链接并下载已发布正文，与本地新版中文比较。只忽略 CRLF、空白行分隔和网站对版本占位符的展开；其他差异逐项核查。待审核期间导出可能仍是旧正文，保留投递证据并明确等待审核。对已完全发布的文章，核对目录、新增小节、代码语言标签及示例，确认网站正文与本地最新译文一致。
+
+### 正式发布页的渲染验收
+
+文本导出一致和编辑器预览正常，仍不足以证明正式页面渲染正确。每次投递完成或修改文章后，在正式文章页执行以下核对；待审核的修正只报告待审核，生效后再验收。
+
+1. 用浏览器 DOM 确认正文容器（当前为 `.markdown-body`），读取真实页面中的标题层级、`pre` 代码块、表格行数、列表项、锚点和方法链接。可在 `cua_repl` 中导入本技能的 `scripts/render_probe.mjs`，将其默认导出函数传给正文 locator 的 `evaluate`，把返回结果保存为临时 JSON。函数仅观察 DOM；若当前浏览器不支持导入，读取脚本后把函数体直接用于 `evaluate`。
+2. 执行 `python3 .agents/skills/learnku-laravel-translate/scripts/render_check.py NEW/zh/slug.md OBSERVATION.json`。该检查要求每张表的行数、标题顺序、列表项和代码块数量匹配，锚点及方法链接齐全；正文不得遗留表格分隔线、Markdown 链接源码、标题样式标记，代码不得被替换成表情图片。代码示例中的 Markdown 保留为源码并排除误报。数量差异必须定位到具体内容；先判断是否他人新增、重复段落或待审核修正，按本次授权范围处理，不能通过放宽比较或伪造观察结果获得通过。
+3. 实际滚动查看每张表格、HTML 容器内的列表 / 方法目录、嵌套列表、代码块及页面末尾。确认没有源码外露、内容截断、标题错层或损坏的代码。编辑器与正式页面可能使用不同的渲染器；最终以正式页面为准。
+4. 修复后重新保存 / 投递，看到服务器成功反馈，再读取正式 DOM、下载 Markdown 比较并保存问题区域截图。只有文本、DOM 校验和实际页面检查均通过，才报告发布验证完成；无法验证的项目明确列出。
 
 报告本地提交 hash、推送远端及分支、文章链接、本次投递区块数和网站当前状态，并附上实际成功消息或文章状态截图；截图不可用时明确说明，不以其替代服务器反馈与正文核对。不能仅凭点击提交、本地校验或本地提交宣称全流程完成。后续用户只需给出两篇 URL，即可再次使用本技能，默认完成提交、推送、网站投递与最终核对。
