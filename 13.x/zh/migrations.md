@@ -589,7 +589,7 @@ Schema::table('users', function (Blueprint $table) {
 </div>
 
 <a name="column-method-bigIncrements"></a>
-#### `bigIncrements()` {.collection-method .first-collection-method}
+<h4 class="collection-method first-collection-method"><code>bigIncrements()</code></h4>
 
 `bigIncrements` 方法创建一个等效于 `UNSIGNED BIGINT` 的自增主键列：
 
@@ -598,7 +598,7 @@ $table->bigIncrements('id');
 ```
 
 <a name="column-method-bigInteger"></a>
-#### `bigInteger()` {.collection-method}
+<h4 class="collection-method"><code>bigInteger()</code></h4>
 
 `bigInteger` 方法创建一个等效于 `BIGINT` 的列：
 
@@ -607,7 +607,7 @@ $table->bigInteger('votes');
 ```
 
 <a name="column-method-binary"></a>
-#### `binary()` {.collection-method}
+<h4 class="collection-method"><code>binary()</code></h4>
 
 `binary` 方法创建一个等效于 `BLOB` 的列：
 
@@ -624,7 +624,7 @@ $table->binary('data', length: 16, fixed: true); // BINARY(16)
 ```
 
 <a name="column-method-boolean"></a>
-#### `boolean()` {.collection-method}
+<h4 class="collection-method"><code>boolean()</code></h4>
 
 `boolean` 方法创建一个等效于 `BOOLEAN` 的列：
 
@@ -633,7 +633,7 @@ $table->boolean('confirmed');
 ```
 
 <a name="column-method-char"></a>
-#### `char()` {.collection-method}
+<h4 class="collection-method"><code>char()</code></h4>
 
 `char` 方法创建一个等效于 `CHAR`、长度为指定值的列：
 
@@ -642,7 +642,7 @@ $table->char('name', length: 100);
 ```
 
 <a name="column-method-dateTimeTz"></a>
-#### `dateTimeTz()` {.collection-method}
+<h4 class="collection-method"><code>dateTimeTz()</code></h4>
 
 `dateTimeTz` 方法创建一个等效于 `DATETIME`（带时区）的列，可以指定小数秒精度：
 
@@ -651,7 +651,7 @@ $table->dateTimeTz('created_at', precision: 0);
 ```
 
 <a name="column-method-dateTime"></a>
-#### `dateTime()` {.collection-method}
+<h4 class="collection-method"><code>dateTime()</code></h4>
 
 `dateTime` 方法创建一个等效于 `DATETIME` 的列，可以指定小数秒精度：
 
@@ -660,7 +660,7 @@ $table->dateTime('created_at', precision: 0);
 ```
 
 <a name="column-method-date"></a>
-#### `date()` {.collection-method}
+<h4 class="collection-method"><code>date()</code></h4>
 
 `date` 方法创建一个等效于 `DATE` 的列：
 
@@ -669,7 +669,7 @@ $table->date('created_at');
 ```
 
 <a name="column-method-decimal"></a>
-#### `decimal()` {.collection-method}
+<h4 class="collection-method"><code>decimal()</code></h4>
 
 `decimal` 方法创建一个等效于 `DECIMAL` 的列，并指定精度（总位数）和标度（小数位数）：
 
@@ -678,7 +678,7 @@ $table->decimal('amount', total: 8, places: 2);
 ```
 
 <a name="column-method-double"></a>
-#### `double()` {.collection-method}
+<h4 class="collection-method"><code>double()</code></h4>
 
 `double` 方法创建一个等效于 `DOUBLE` 的列：
 
@@ -687,7 +687,7 @@ $table->double('amount');
 ```
 
 <a name="column-method-enum"></a>
-#### `enum()` {.collection-method}
+<h4 class="collection-method"><code>enum()</code></h4>
 
 `enum` 方法创建一个等效于 `ENUM` 的列，并指定允许的值：
 
@@ -704,7 +704,7 @@ $table->enum('difficulty', Difficulty::cases());
 ```
 
 <a name="column-method-float"></a>
-#### `float()` {.collection-method}
+<h4 class="collection-method"><code>float()</code></h4>
 
 `float` 方法创建一个等效于 `FLOAT`、精度为指定值的列：
 
@@ -713,7 +713,7 @@ $table->float('amount', precision: 53);
 ```
 
 <a name="column-method-foreignId"></a>
-#### `foreignId()` {.collection-method}
+<h4 class="collection-method"><code>foreignId()</code></h4>
 
 `foreignId` 方法创建一个等效于 `UNSIGNED BIGINT` 的列：
 
@@ -722,7 +722,7 @@ $table->foreignId('user_id');
 ```
 
 <a name="column-method-foreignIdFor"></a>
-#### `foreignIdFor()` {.collection-method}
+<h4 class="collection-method"><code>foreignIdFor()</code></h4>
 
 `foreignIdFor` 方法为指定模型类添加一个 `{column}_id` 列。根据模型主键的类型，列类型会是 `UNSIGNED BIGINT`、`CHAR(36)` 或 `CHAR(26)`：
 
@@ -731,7 +731,7 @@ $table->foreignIdFor(User::class);
 ```
 
 <a name="column-method-foreignUlid"></a>
-#### `foreignUlid()` {.collection-method}
+<h4 class="collection-method"><code>foreignUlid()</code></h4>
 
 `foreignUlid` 方法创建一个等效于 `ULID` 的列：
 
@@ -740,7 +740,7 @@ $table->foreignUlid('user_id');
 ```
 
 <a name="column-method-foreignUuid"></a>
-#### `foreignUuid()` {.collection-method}
+<h4 class="collection-method"><code>foreignUuid()</code></h4>
 
 `foreignUuid` 方法创建一个等效于 `UUID` 的列：
 
@@ -749,7 +749,7 @@ $table->foreignUuid('user_id');
 ```
 
 <a name="column-method-foreignUuidFor"></a>
-#### `foreignUuidFor()` {.collection-method}
+<h4 class="collection-method"><code>foreignUuidFor()</code></h4>
 
 `foreignUuidFor` 方法为指定模型类添加一个等效于 UUID 的 `{column}_id` 列：
 
@@ -758,7 +758,7 @@ $table->foreignUuidFor(User::class);
 ```
 
 <a name="column-method-geography"></a>
-#### `geography()` {.collection-method}
+<h4 class="collection-method"><code>geography()</code></h4>
 
 `geography` 方法创建一个等效于 `GEOGRAPHY` 的列，并指定空间类型和 SRID（空间参考系统标识符）：
 
@@ -770,7 +770,7 @@ $table->geography('coordinates', subtype: 'point', srid: 4326);
 > 空间类型的支持取决于数据库驱动，请参阅相应数据库的文档。如果应用使用 PostgreSQL，必须先安装 [PostGIS](https://postgis.net) 扩展，才能使用 `geography` 方法。
 
 <a name="column-method-geometry"></a>
-#### `geometry()` {.collection-method}
+<h4 class="collection-method"><code>geometry()</code></h4>
 
 `geometry` 方法创建一个等效于 `GEOMETRY` 的列，并指定空间类型和 SRID（空间参考系统标识符）：
 
@@ -782,7 +782,7 @@ $table->geometry('positions', subtype: 'point', srid: 0);
 > 空间类型的支持取决于数据库驱动，请参阅相应数据库的文档。如果应用使用 PostgreSQL，必须先安装 [PostGIS](https://postgis.net) 扩展，才能使用 `geometry` 方法。
 
 <a name="column-method-id"></a>
-#### `id()` {.collection-method}
+<h4 class="collection-method"><code>id()</code></h4>
 
 `id` 方法是 `bigIncrements` 的别名，默认创建名为 `id` 的列。你也可以传入列名，为其指定其他名称：
 
@@ -791,7 +791,7 @@ $table->id();
 ```
 
 <a name="column-method-increments"></a>
-#### `increments()` {.collection-method}
+<h4 class="collection-method"><code>increments()</code></h4>
 
 `increments` 方法创建一个等效于 `UNSIGNED INTEGER` 的自增主键列：
 
@@ -800,7 +800,7 @@ $table->increments('id');
 ```
 
 <a name="column-method-integer"></a>
-#### `integer()` {.collection-method}
+<h4 class="collection-method"><code>integer()</code></h4>
 
 `integer` 方法创建一个等效于 `INTEGER` 的列：
 
@@ -809,7 +809,7 @@ $table->integer('votes');
 ```
 
 <a name="column-method-ipAddress"></a>
-#### `ipAddress()` {.collection-method}
+<h4 class="collection-method"><code>ipAddress()</code></h4>
 
 `ipAddress` 方法创建一个等效于 `VARCHAR` 的列：
 
@@ -820,7 +820,7 @@ $table->ipAddress('visitor');
 使用 PostgreSQL 时，会创建 `INET` 列。
 
 <a name="column-method-json"></a>
-#### `json()` {.collection-method}
+<h4 class="collection-method"><code>json()</code></h4>
 
 `json` 方法创建一个等效于 `JSON` 的列：
 
@@ -831,7 +831,7 @@ $table->json('options');
 使用 SQLite 时，会创建 `TEXT` 列。
 
 <a name="column-method-jsonb"></a>
-#### `jsonb()` {.collection-method}
+<h4 class="collection-method"><code>jsonb()</code></h4>
 
 `jsonb` 方法创建一个等效于 `JSONB` 的列：
 
@@ -842,7 +842,7 @@ $table->jsonb('options');
 使用 SQLite 时，会创建 `TEXT` 列。
 
 <a name="column-method-longText"></a>
-#### `longText()` {.collection-method}
+<h4 class="collection-method"><code>longText()</code></h4>
 
 `longText` 方法创建一个等效于 `LONGTEXT` 的列：
 
@@ -857,7 +857,7 @@ $table->longText('data')->charset('binary'); // LONGBLOB
 ```
 
 <a name="column-method-macAddress"></a>
-#### `macAddress()` {.collection-method}
+<h4 class="collection-method"><code>macAddress()</code></h4>
 
 `macAddress` 方法创建一个用于存储 MAC 地址的列。PostgreSQL 等数据库系统具有专门存储此类数据的列类型，其他数据库系统则使用等效的字符串列：
 
@@ -866,7 +866,7 @@ $table->macAddress('device');
 ```
 
 <a name="column-method-mediumIncrements"></a>
-#### `mediumIncrements()` {.collection-method}
+<h4 class="collection-method"><code>mediumIncrements()</code></h4>
 
 `mediumIncrements` 方法创建一个等效于 `UNSIGNED MEDIUMINT` 的自增主键列：
 
@@ -875,7 +875,7 @@ $table->mediumIncrements('id');
 ```
 
 <a name="column-method-mediumInteger"></a>
-#### `mediumInteger()` {.collection-method}
+<h4 class="collection-method"><code>mediumInteger()</code></h4>
 
 `mediumInteger` 方法创建一个等效于 `MEDIUMINT` 的列：
 
@@ -884,7 +884,7 @@ $table->mediumInteger('votes');
 ```
 
 <a name="column-method-mediumText"></a>
-#### `mediumText()` {.collection-method}
+<h4 class="collection-method"><code>mediumText()</code></h4>
 
 `mediumText` 方法创建一个等效于 `MEDIUMTEXT` 的列：
 
@@ -899,7 +899,7 @@ $table->mediumText('data')->charset('binary'); // MEDIUMBLOB
 ```
 
 <a name="column-method-morphs"></a>
-#### `morphs()` {.collection-method}
+<h4 class="collection-method"><code>morphs()</code></h4>
 
 `morphs` 是一个便捷方法，会添加一个等效于 `VARCHAR` 的 `{column}_type` 列和一个 `{column}_id` 列。根据模型主键的类型，`{column}_id` 的列类型会是 `UNSIGNED BIGINT`、`CHAR(36)` 或 `CHAR(26)`。
 
@@ -910,7 +910,7 @@ $table->morphs('taggable');
 ```
 
 <a name="column-method-nullableMorphs"></a>
-#### `nullableMorphs()` {.collection-method}
+<h4 class="collection-method"><code>nullableMorphs()</code></h4>
 
 该方法与 [morphs](#column-method-morphs) 类似，但创建的列允许为 `null`：
 
@@ -919,7 +919,7 @@ $table->nullableMorphs('taggable');
 ```
 
 <a name="column-method-nullableUlidMorphs"></a>
-#### `nullableUlidMorphs()` {.collection-method}
+<h4 class="collection-method"><code>nullableUlidMorphs()</code></h4>
 
 该方法与 [ulidMorphs](#column-method-ulidMorphs) 类似，但创建的列允许为 `null`：
 
@@ -928,7 +928,7 @@ $table->nullableUlidMorphs('taggable');
 ```
 
 <a name="column-method-nullableUuidMorphs"></a>
-#### `nullableUuidMorphs()` {.collection-method}
+<h4 class="collection-method"><code>nullableUuidMorphs()</code></h4>
 
 该方法与 [uuidMorphs](#column-method-uuidMorphs) 类似，但创建的列允许为 `null`：
 
@@ -937,7 +937,7 @@ $table->nullableUuidMorphs('taggable');
 ```
 
 <a name="column-method-rememberToken"></a>
-#### `rememberToken()` {.collection-method}
+<h4 class="collection-method"><code>rememberToken()</code></h4>
 
 `rememberToken` 方法创建一个允许为 `null`、等效于 `VARCHAR(100)` 的列，用于存储「记住我」功能的[认证令牌](/docs/{{version}}/authentication#remembering-users)：
 
@@ -946,7 +946,7 @@ $table->rememberToken();
 ```
 
 <a name="column-method-set"></a>
-#### `set()` {.collection-method}
+<h4 class="collection-method"><code>set()</code></h4>
 
 `set` 方法创建一个等效于 `SET` 的列，并指定允许的值列表：
 
@@ -955,7 +955,7 @@ $table->set('flavors', ['strawberry', 'vanilla']);
 ```
 
 <a name="column-method-smallIncrements"></a>
-#### `smallIncrements()` {.collection-method}
+<h4 class="collection-method"><code>smallIncrements()</code></h4>
 
 `smallIncrements` 方法创建一个等效于 `UNSIGNED SMALLINT` 的自增主键列：
 
@@ -964,7 +964,7 @@ $table->smallIncrements('id');
 ```
 
 <a name="column-method-smallInteger"></a>
-#### `smallInteger()` {.collection-method}
+<h4 class="collection-method"><code>smallInteger()</code></h4>
 
 `smallInteger` 方法创建一个等效于 `SMALLINT` 的列：
 
@@ -973,7 +973,7 @@ $table->smallInteger('votes');
 ```
 
 <a name="column-method-softDeletesTz"></a>
-#### `softDeletesTz()` {.collection-method}
+<h4 class="collection-method"><code>softDeletesTz()</code></h4>
 
 `softDeletesTz` 方法添加一个允许为 `null`、等效于 `TIMESTAMP`（带时区）的 `deleted_at` 列，可以指定小数秒精度。该列用于存储 Eloquent「软删除」功能所需的 `deleted_at` 时间戳：
 
@@ -982,7 +982,7 @@ $table->softDeletesTz('deleted_at', precision: 0);
 ```
 
 <a name="column-method-softDeletes"></a>
-#### `softDeletes()` {.collection-method}
+<h4 class="collection-method"><code>softDeletes()</code></h4>
 
 `softDeletes` 方法添加一个允许为 `null`、等效于 `TIMESTAMP` 的 `deleted_at` 列，可以指定小数秒精度。该列用于存储 Eloquent「软删除」功能所需的 `deleted_at` 时间戳：
 
@@ -991,7 +991,7 @@ $table->softDeletes('deleted_at', precision: 0);
 ```
 
 <a name="column-method-string"></a>
-#### `string()` {.collection-method}
+<h4 class="collection-method"><code>string()</code></h4>
 
 `string` 方法创建一个等效于 `VARCHAR`、长度为指定值的列：
 
@@ -1000,7 +1000,7 @@ $table->string('name', length: 100);
 ```
 
 <a name="column-method-text"></a>
-#### `text()` {.collection-method}
+<h4 class="collection-method"><code>text()</code></h4>
 
 `text` 方法创建一个等效于 `TEXT` 的列：
 
@@ -1015,7 +1015,7 @@ $table->text('data')->charset('binary'); // BLOB
 ```
 
 <a name="column-method-timeTz"></a>
-#### `timeTz()` {.collection-method}
+<h4 class="collection-method"><code>timeTz()</code></h4>
 
 `timeTz` 方法创建一个等效于 `TIME`（带时区）的列，可以指定小数秒精度：
 
@@ -1024,7 +1024,7 @@ $table->timeTz('sunrise', precision: 0);
 ```
 
 <a name="column-method-time"></a>
-#### `time()` {.collection-method}
+<h4 class="collection-method"><code>time()</code></h4>
 
 `time` 方法创建一个等效于 `TIME` 的列，可以指定小数秒精度：
 
@@ -1033,7 +1033,7 @@ $table->time('sunrise', precision: 0);
 ```
 
 <a name="column-method-timestampTz"></a>
-#### `timestampTz()` {.collection-method}
+<h4 class="collection-method"><code>timestampTz()</code></h4>
 
 `timestampTz` 方法创建一个等效于 `TIMESTAMP`（带时区）的列，可以指定小数秒精度：
 
@@ -1042,7 +1042,7 @@ $table->timestampTz('added_at', precision: 0);
 ```
 
 <a name="column-method-timestamp"></a>
-#### `timestamp()` {.collection-method}
+<h4 class="collection-method"><code>timestamp()</code></h4>
 
 `timestamp` 方法创建一个等效于 `TIMESTAMP` 的列，可以指定小数秒精度：
 
@@ -1051,7 +1051,7 @@ $table->timestamp('added_at', precision: 0);
 ```
 
 <a name="column-method-timestampsTz"></a>
-#### `timestampsTz()` {.collection-method}
+<h4 class="collection-method"><code>timestampsTz()</code></h4>
 
 `timestampsTz` 方法创建 `created_at` 和 `updated_at` 两个等效于 `TIMESTAMP`（带时区）的列，可以指定小数秒精度：
 
@@ -1060,7 +1060,7 @@ $table->timestampsTz(precision: 0);
 ```
 
 <a name="column-method-timestamps"></a>
-#### `timestamps()` {.collection-method}
+<h4 class="collection-method"><code>timestamps()</code></h4>
 
 `timestamps` 方法创建 `created_at` 和 `updated_at` 两个等效于 `TIMESTAMP` 的列，可以指定小数秒精度：
 
@@ -1069,7 +1069,7 @@ $table->timestamps(precision: 0);
 ```
 
 <a name="column-method-tinyIncrements"></a>
-#### `tinyIncrements()` {.collection-method}
+<h4 class="collection-method"><code>tinyIncrements()</code></h4>
 
 `tinyIncrements` 方法创建一个等效于 `UNSIGNED TINYINT` 的自增主键列：
 
@@ -1078,7 +1078,7 @@ $table->tinyIncrements('id');
 ```
 
 <a name="column-method-tinyInteger"></a>
-#### `tinyInteger()` {.collection-method}
+<h4 class="collection-method"><code>tinyInteger()</code></h4>
 
 `tinyInteger` 方法创建一个等效于 `TINYINT` 的列：
 
@@ -1087,7 +1087,7 @@ $table->tinyInteger('votes');
 ```
 
 <a name="column-method-tinyText"></a>
-#### `tinyText()` {.collection-method}
+<h4 class="collection-method"><code>tinyText()</code></h4>
 
 `tinyText` 方法创建一个等效于 `TINYTEXT` 的列：
 
@@ -1102,7 +1102,7 @@ $table->tinyText('data')->charset('binary'); // TINYBLOB
 ```
 
 <a name="column-method-unsignedBigInteger"></a>
-#### `unsignedBigInteger()` {.collection-method}
+<h4 class="collection-method"><code>unsignedBigInteger()</code></h4>
 
 `unsignedBigInteger` 方法创建一个等效于 `UNSIGNED BIGINT` 的列：
 
@@ -1111,7 +1111,7 @@ $table->unsignedBigInteger('votes');
 ```
 
 <a name="column-method-unsignedInteger"></a>
-#### `unsignedInteger()` {.collection-method}
+<h4 class="collection-method"><code>unsignedInteger()</code></h4>
 
 `unsignedInteger` 方法创建一个等效于 `UNSIGNED INTEGER` 的列：
 
@@ -1120,7 +1120,7 @@ $table->unsignedInteger('votes');
 ```
 
 <a name="column-method-unsignedMediumInteger"></a>
-#### `unsignedMediumInteger()` {.collection-method}
+<h4 class="collection-method"><code>unsignedMediumInteger()</code></h4>
 
 `unsignedMediumInteger` 方法创建一个等效于 `UNSIGNED MEDIUMINT` 的列：
 
@@ -1129,7 +1129,7 @@ $table->unsignedMediumInteger('votes');
 ```
 
 <a name="column-method-unsignedSmallInteger"></a>
-#### `unsignedSmallInteger()` {.collection-method}
+<h4 class="collection-method"><code>unsignedSmallInteger()</code></h4>
 
 `unsignedSmallInteger` 方法创建一个等效于 `UNSIGNED SMALLINT` 的列：
 
@@ -1138,7 +1138,7 @@ $table->unsignedSmallInteger('votes');
 ```
 
 <a name="column-method-unsignedTinyInteger"></a>
-#### `unsignedTinyInteger()` {.collection-method}
+<h4 class="collection-method"><code>unsignedTinyInteger()</code></h4>
 
 `unsignedTinyInteger` 方法创建一个等效于 `UNSIGNED TINYINT` 的列：
 
@@ -1147,7 +1147,7 @@ $table->unsignedTinyInteger('votes');
 ```
 
 <a name="column-method-ulidMorphs"></a>
-#### `ulidMorphs()` {.collection-method}
+<h4 class="collection-method"><code>ulidMorphs()</code></h4>
 
 `ulidMorphs` 是一个便捷方法，会添加一个等效于 `VARCHAR` 的 `{column}_type` 列，以及一个等效于 `CHAR(26)` 的 `{column}_id` 列。
 
@@ -1158,7 +1158,7 @@ $table->ulidMorphs('taggable');
 ```
 
 <a name="column-method-uuidMorphs"></a>
-#### `uuidMorphs()` {.collection-method}
+<h4 class="collection-method"><code>uuidMorphs()</code></h4>
 
 `uuidMorphs` 是一个便捷方法，会添加一个等效于 `VARCHAR` 的 `{column}_type` 列，以及一个等效于 `CHAR(36)` 的 `{column}_id` 列。
 
@@ -1169,7 +1169,7 @@ $table->uuidMorphs('taggable');
 ```
 
 <a name="column-method-ulid"></a>
-#### `ulid()` {.collection-method}
+<h4 class="collection-method"><code>ulid()</code></h4>
 
 `ulid` 方法创建一个等效于 `ULID` 的列：
 
@@ -1178,7 +1178,7 @@ $table->ulid('id');
 ```
 
 <a name="column-method-uuid"></a>
-#### `uuid()` {.collection-method}
+<h4 class="collection-method"><code>uuid()</code></h4>
 
 `uuid` 方法创建一个等效于 `UUID` 的列：
 
@@ -1187,7 +1187,7 @@ $table->uuid('id');
 ```
 
 <a name="column-method-vector"></a>
-#### `vector()` {.collection-method}
+<h4 class="collection-method"><code>vector()</code></h4>
 
 `vector` 方法创建一个等效于 `vector` 的列：
 
@@ -1208,7 +1208,7 @@ $table->vector('embedding', dimensions: 1536)->index();
 ```
 
 <a name="column-method-year"></a>
-#### `year()` {.collection-method}
+<h4 class="collection-method"><code>year()</code></h4>
 
 `year` 方法创建一个等效于 `YEAR` 的列：
 
