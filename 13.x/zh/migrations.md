@@ -1232,7 +1232,7 @@ Schema::table('users', function (Blueprint $table) {
 
 下表列出了所有可用的列修饰符，不包含[索引修饰符](#creating-indexes)：
 
-<div class="overflow-auto">
+<div class="overflow-auto" markdown="1">
 
 | 修饰符                            | 说明                                                                                    |
 | ----------------------------------- | ---------------------------------------------------------------------------------------------- |
@@ -1409,7 +1409,7 @@ Schema::table('users', function (Blueprint $table) {
 
 Laravel 提供了多种便捷方法，用于删除常见类型的列，具体如下：
 
-<div class="overflow-auto">
+<div class="overflow-auto" markdown="1">
 
 | 命令                             | 说明                                           |
 | ----------------------------------- | ----------------------------------------------------- |
@@ -1462,7 +1462,7 @@ $table->unique('email', 'unique_email');
 
 Laravel 数据库结构构建器的蓝图类为各种受支持的索引提供了创建方法。每个索引方法都接受可选的第二个参数，用于指定索引名称。如果省略，就会根据表名、索引列名及索引类型生成名称。可用方法如下：
 
-<div class="overflow-auto">
+<div class="overflow-auto" markdown="1">
 
 | 命令                                          | 说明                                                    |
 | ------------------------------------------------ | -------------------------------------------------------------- |
@@ -1520,7 +1520,7 @@ $table->renameIndex('from', 'to');
 
 删除索引时，必须指定索引名称。默认情况下，Laravel 会根据表名、索引列名和索引类型自动生成名称。示例如下：
 
-<div class="overflow-auto">
+<div class="overflow-auto" markdown="1">
 
 | 命令                                                       | 说明                                                 |
 | ------------------------------------------------------------- | ----------------------------------------------------------- |
@@ -1586,7 +1586,7 @@ $table->foreignId('user_id')
 
 这些操作也提供了更清晰的替代语法：
 
-<div class="overflow-auto">
+<div class="overflow-auto" markdown="1">
 
 | 方法                        | 说明                                       |
 | ----------------------------- | ------------------------------------------------- |
@@ -1647,7 +1647,7 @@ Schema::withoutForeignKeyConstraints(function () {
 
 为方便使用，每个迁移操作都会派发一个[事件](/docs/{{version}}/events)。除 `SchemaDumped` 和 `SchemaLoaded` 外，下列事件都实现了 `Illuminate\Contracts\Database\Events\MigrationEvent` 接口：
 
-<div class="overflow-auto">
+<div class="overflow-auto" markdown="1">
 
 | 类                                            | 说明                                      |
 | ------------------------------------------------ | ------------------------------------------------ |
