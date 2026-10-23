@@ -4,7 +4,26 @@ import collections
 import json
 import re
 import sys
+from html.parser import HTMLParser
 from pathlib import Path
+
+
+class HtmlTables(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.tables, self.stack = [], []
+
+    def handle_starttag(self, tag, attrs):
+        if tag == 'table':
+            self.stack.append(len(self.tables))
+            self.tables.append([self.getpos()[0] - 1, 0])
+        elif tag == 'tr':
+            for index in self.stack:
+                self.tables[index][1] += 1
+
+    def handle_endtag(self, tag):
+        if tag == 'table' and self.stack:
+            self.stack.pop()
 
 
 def manifest(markdown):
@@ -41,7 +60,9 @@ def manifest(markdown):
             lines.append(line)
     if code:
         raise ValueError('代码围栏未闭合')
-    headings, tables, links = [], [], []
+    html_tables = HtmlTables()
+    html_tables.feed('\n'.join(lines))
+    headings, tables, links = [], list(html_tables.tables), []
     for i, line in enumerate(lines):
         heading = re.match(r'^(#{1,6})\s', line)
         html_heading = re.match(r'^<h([1-6])\b', line)
@@ -54,11 +75,12 @@ def manifest(markdown):
             while j < len(lines) and lines[j].strip().startswith('|'):
                 rows += 1
                 j += 1
-            tables.append(rows)
+            tables.append([i, rows])
         method_link = re.match(r'^\[[^\]]+\]\((#[^)]+)\)', line)
         if method_link:
             links.append(method_link[1])
-    return {'headings': headings, 'codeBlocks': code_blocks, 'tables': tables,
+    return {'headings': headings, 'codeBlocks': code_blocks,
+            'tables': [rows for _, rows in sorted(tables)],
             'anchors': re.findall(r'<a name="([^"]+)"></a>', '\n'.join(lines)),
             'methodLinks': links,
             'listItems': sum(bool(re.match(r'^\s*[-*+]\s+', line)) for line in lines)}

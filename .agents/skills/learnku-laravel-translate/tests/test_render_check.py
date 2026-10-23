@@ -19,6 +19,16 @@ class RenderCheckTests(unittest.TestCase):
         self.assertEqual(MODULE.manifest(self.markdown)['tables'], [2])
         self.assertEqual(MODULE.check(self.markdown, self.observed)['status'], 'passed')
 
+    def test_counts_native_html_tables_in_document_order(self):
+        html_table = '<table>\n<tr><td><strong>命令</strong></td><td><code>php</code></td></tr>\n<tr><td>参数</td><td>artisan boost:mcp</td></tr>\n</table>\n'
+        markdown = self.markdown + html_table + '\n| 后续表格 |\n| --- |\n| 一 |\n| 二 |\n\n```html\n' + html_table + '```\n'
+        self.assertEqual(MODULE.manifest(markdown)['tables'], [2, 2, 3])
+        observation = dict(self.observed, codeBlocks=2, tables=[2, 2, 3])
+        self.assertEqual(MODULE.check(markdown, observation)['status'], 'passed')
+        for tables in [[2, 3], [2, 1, 3]]:
+            with self.assertRaises(ValueError):
+                MODULE.check(markdown, dict(observation, tables=tables))
+
     def test_missing_table_and_literal_markdown_fail(self):
         for updates in [{'tables': []}, {'tables': [1]}, {'rawMarkdown': ['| --- |']}]:
             with self.assertRaises(ValueError):

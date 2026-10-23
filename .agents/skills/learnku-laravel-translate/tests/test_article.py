@@ -121,6 +121,48 @@ class ArticleTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 MODULE.validate(source, changed)
 
+    def test_reviewed_fenced_prose_preserves_commands_and_inline_tokens(self):
+        source = '```text tab=Codex\nOpen `MCP` settings.\ncodex mcp add boost -- php artisan boost:mcp\n```\n'
+        translated = source.replace('Open `MCP` settings.', '打开 `MCP` 设置。')
+        with self.assertRaises(ValueError):
+            MODULE.validate(source, translated)
+        self.assertEqual(MODULE.validate(source, translated, '2')['status'], 'passed')
+        for changed, selection in [(translated.replace('`MCP`', '`Other`'), '2'),
+                                   (translated.replace('add boost', 'add other'), '2:3')]:
+            with self.assertRaises(ValueError):
+                MODULE.validate(source, changed, selection)
+
+    def test_reviewed_markdown_prose_preserves_example_code_and_frontmatter(self):
+        source = '```markdown\nname: package-name\ndescription: Build components.\n## Features\nUse `PackageName`.\n$result = PackageName::run();\n```\n'
+        translated = source.replace('Build components.', '构建组件。').replace('Features', '功能').replace('Use `PackageName`.', '使用 `PackageName`。')
+        self.assertEqual(MODULE.validate(source, translated, '3:5')['status'], 'passed')
+        for changed, selection in [(translated.replace('name: package-name', 'name: other'), '2:5'),
+                                   (translated.replace('::run()', '::other()'), '3:6')]:
+            with self.assertRaises(ValueError):
+                MODULE.validate(source, changed, selection)
+        with self.assertRaises(ValueError):
+            MODULE.validate('```php\n$value = 1;\n```\n', '```php\n$value = 2;\n```\n', '2')
+
+    def test_reviewed_prose_cli_extracts_from_unchanged_english_snapshot(self):
+        self.source.write_text('```text\nRemember this rule.\n```\n')
+        self.translated.write_text('```text\n请记住这条规则。\n```\n')
+        result = self.run_cli('--lines', '1:3', '--prose-lines', '2')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout, self.translated.read_text())
+        for invalid in ['0', '4', '3:2', 'a']:
+            with self.assertRaises(ValueError):
+                MODULE.validate(self.source.read_text(), self.translated.read_text(), invalid)
+
+    def test_html_table_label_translation_preserves_markup_and_code(self):
+        source = '<tr><td><strong>Command</strong></td><td><code>php</code></td></tr>\n'
+        translated = source.replace('Command', '命令')
+        self.assertEqual(MODULE.validate(source, translated)['status'], 'passed')
+        for changed in [translated.replace('php', 'python'),
+                        translated.replace('strong', 'em'),
+                        translated.replace('<td>', '<td class="other">')]:
+            with self.assertRaises(ValueError):
+                MODULE.validate(source, changed)
+
     def test_learnku_table_container_requires_markdown_parsing(self):
         source = '<div class="overflow-auto">\n\n| Name |\n| --- |\n| Value |\n\n</div>\n'
         with self.assertRaisesRegex(ValueError, 'Markdown'):
