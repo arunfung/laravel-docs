@@ -51,7 +51,7 @@ def shape(text):
             if code_language == 'sql':
                 normalized, code_quote = line_comment_shape(line, code_quote, '#')
                 result.append(normalized)
-            elif code_language == 'shell':
+            elif code_language in ('shell', 'yaml'):
                 normalized, code_quote = line_comment_shape(line, code_quote, '#', line_start_only=True)
                 result.append(normalized)
             elif code_language == 'php' and code_quote is None and not line.strip():
