@@ -290,6 +290,25 @@ last line'; // Explain
             with self.assertRaises(ValueError):
                 MODULE.validate(source, changed)
 
+    def test_yaml_standalone_comment_translation_preserves_ci_commands(self):
+        source = '```yaml\n# Include Chrome\nservices:\n  - dusk\npipeline:\n  - cmd: |\n      # Create a Dusk environment\n      cp .env .env.dusk.ci\n```\n'
+        translated = source.replace('Include Chrome', '包含 Chrome').replace('Create a Dusk environment', '创建 Dusk 环境')
+        self.assertEqual(MODULE.validate(source, translated)['status'], 'passed')
+        for changed in [translated.replace('  - dusk', '  - other'),
+                        translated.replace('cp .env .env.dusk.ci', 'cp .env .env.production'),
+                        translated.replace('      # 创建', '    # 创建')]:
+            with self.assertRaises(ValueError):
+                MODULE.validate(source, changed)
+
+    def test_yaml_hash_markers_in_quoted_values_remain_content(self):
+        source = "```yaml\nvalue: '#literal'\ntext: 'first\n# literal\nlast'\n# Explain\n```\n"
+        translated = source.replace('Explain', '说明')
+        self.assertEqual(MODULE.validate(source, translated)['status'], 'passed')
+        for changed in [translated.replace('#literal', '#changed'),
+                        translated.replace('# literal', '# 修改')]:
+            with self.assertRaises(ValueError):
+                MODULE.validate(source, changed)
+
     def test_validation_catches_anchor_fence_and_whitespace_changes(self):
         source = self.source.read_text()
         translated = self.translated.read_text()
