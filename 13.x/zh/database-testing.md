@@ -61,9 +61,9 @@ class ExampleTest extends TestCase
 <a name="model-factories"></a>
 ## 模型工厂
 
-测试时，你可能需要在执行测试之前向数据库插入一些记录。创建这些测试数据时，你无需手动指定每一列的值，Laravel 允许你通过[模型工厂](/docs/{{version}}/eloquent-factories)为每个 [Eloquent 模型](/docs/{{version}}/eloquent)定义一组默认属性。
+测试时，你可能需要在执行测试之前向数据库插入一些记录。创建这些测试数据时，你无需手动指定每一列的值，Laravel 允许你通过 [模型工厂](/docs/{{version}}/eloquent-factories) 为每个 [Eloquent 模型](/docs/{{version}}/eloquent) 定义一组默认属性。
 
-要进一步了解如何定义模型工厂并使用它创建模型，请参阅完整的[模型工厂文档](/docs/{{version}}/eloquent-factories)。定义模型工厂后，你就可以在测试中使用该工厂创建模型：
+要进一步了解如何定义模型工厂并使用它创建模型，请参阅完整的 [模型工厂文档](/docs/{{version}}/eloquent-factories)。定义模型工厂后，你就可以在测试中使用该工厂创建模型：
 
 ```php tab=Pest
 use App\Models\User;
@@ -89,7 +89,7 @@ public function test_models_can_be_instantiated(): void
 <a name="running-seeders"></a>
 ## 运行 Seeder
 
-如果你想在功能测试期间使用[数据库 Seeder](/docs/{{version}}/seeding)填充数据库，可以调用 `seed` 方法。默认情况下，`seed` 方法会执行 `DatabaseSeeder`，该类应当调用你的其他所有 Seeder。你也可以向 `seed` 方法传入指定的 Seeder 类名：
+如果你想在功能测试期间使用 [数据库 Seeder](/docs/{{version}}/seeding) 填充数据库，可以调用 `seed` 方法。默认情况下，`seed` 方法会执行 `DatabaseSeeder`，该类应当调用你的其他所有 Seeder。你也可以向 `seed` 方法传入指定的 Seeder 类名：
 
 ```php tab=Pest
 <?php
