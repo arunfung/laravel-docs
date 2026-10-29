@@ -273,6 +273,15 @@ last line'; // Explain
             with self.assertRaises(ValueError):
                 MODULE.validate(source, changed)
 
+    def test_ini_standalone_comment_translation_preserves_settings(self):
+        source = '```ini\n; Explain setting\nxdebug.mode = debug\nvalue = "literal;value"\n```\n'
+        translated = source.replace('Explain setting', '说明设置')
+        self.assertEqual(MODULE.validate(source, translated)['status'], 'passed')
+        for changed in [translated.replace('debug', 'trace'),
+                        translated.replace('literal;value', 'literal;other')]:
+            with self.assertRaises(ValueError):
+                MODULE.validate(source, changed)
+
     def test_shell_standalone_comment_translation_preserves_commands(self):
         source = '```shell\n# Refresh the database\nphp artisan migrate:refresh --seed\n```\n'
         translated = source.replace('Refresh the database', '刷新数据库')
