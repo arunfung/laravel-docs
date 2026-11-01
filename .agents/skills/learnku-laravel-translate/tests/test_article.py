@@ -282,6 +282,15 @@ last line'; // Explain
             with self.assertRaises(ValueError):
                 MODULE.validate(source, changed)
 
+    def test_dockerfile_standalone_comment_translation_preserves_instructions(self):
+        source = '```dockerfile\nFROM php:8.3\n    # Add extensions\nRUN echo "literal#value"\n```\n'
+        translated = source.replace('Add extensions', '添加扩展')
+        self.assertEqual(MODULE.validate(source, translated)['status'], 'passed')
+        for changed in [translated.replace('php:8.3', 'php:8.4'),
+                        translated.replace('literal#value', 'literal#other')]:
+            with self.assertRaises(ValueError):
+                MODULE.validate(source, changed)
+
     def test_shell_standalone_comment_translation_preserves_commands(self):
         source = '```shell\n# Refresh the database\nphp artisan migrate:refresh --seed\n```\n'
         translated = source.replace('Refresh the database', '刷新数据库')
