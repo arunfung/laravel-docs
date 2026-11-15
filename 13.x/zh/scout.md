@@ -387,14 +387,14 @@ Schema::table('posts', function (Blueprint $table) {
 
 可以通过 `SearchUsingFullText` 属性的第二个参数自定义 PostgreSQL 全文搜索：
 
-| Option | Description | Default |
+| 选项 | 说明 | 默认值 |
 | --- | --- | --- |
-| `vector` | Whether the full-text columns are stored `tsvector` columns. | `false` |
-| `language` | The text search configuration, such as `english` or `public.english_unaccent`. | `english` |
-| `mode` | The query syntax: `plain`, `phrase`, `websearch`, or `raw`. | `plain` |
-| `rank` | The ranking function: `ts_rank` or `ts_rank_cd`. | `ts_rank` |
-| `trigram` | A column name or array of columns for typo-tolerant matching. | None |
-| `trigram_mode` | Whether trigram matching is used as a `fallback` or blended with full-text matches using `blend`. | `fallback` |
+| `vector` | 全文列是否为存储的 `tsvector` 列。 | `false` |
+| `language` | 文本搜索配置，例如 `english` 或 `public.english_unaccent`。 | `english` |
+| `mode` | 查询语法：`plain`、`phrase`、`websearch` 或 `raw`。 | `plain` |
+| `rank` | 排名函数：`ts_rank` 或 `ts_rank_cd`。 | `ts_rank` |
+| `trigram` | 用于拼写容错匹配的列名或列名数组。 | 无 |
+| `trigram_mode` | 三元组匹配是用作回退（`fallback`），还是与全文匹配混合（`blend`）。 | `fallback` |
 
 `plain` 模式搜索所有查询词，而 `phrase` 按顺序匹配词语。`websearch` 模式支持网页搜索语法，例如带引号的短语和排除词；`raw` 则接受 PostgreSQL `tsquery` 语法。搜索存储的向量列时，`language` 必须与生成该列时使用的文本搜索配置一致。
 
